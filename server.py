@@ -1,0 +1,68 @@
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import cgi
+
+from radapp import RADApp
+
+class Server(BaseHTTPRequestHandler):         
+
+    def do_POST(self):
+        hwControl = RADApp()
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers() 
+
+        ctype, pdict = cgi.parse_header(self.headers['content-type'])
+        
+        if ctype == 'application/x-www-form-urlencoded':
+            length = int(self.headers['content-length'])
+            postVars = cgi.parse_qs(self.rfile.read(length), keep_blank_values=1)
+        else:
+            postVars = {}
+
+        if bytes('auth', 'utf8') in postVars:
+            try:
+                key = postVars[bytes('auth', 'utf8')][0].decode('utf-8')
+                opType = postVars[bytes('type', 'utf8')][0].decode('utf-8')
+                operation = postVars[bytes('op', 'utf8')][0].decode('utf-8')
+                isContinuous = (postVars[bytes('cont', 'utf8')][0].decode('utf-8') == 'true')
+            except:
+                message = '{ "status":"error_decoding_params" }'
+                self.wfile.write(bytes(message, 'utf8'))
+                return                
+        else:
+            message = '{ "status":"no_auth" }'
+            self.wfile.write(bytes(message, 'utf8'))
+            return
+
+        if key == 'KEY_123': # TODO secure keys
+            if opType == 'test':
+                #test(postVars)
+                message = '{ "status":"sent_to_test()" }'
+            elif operation == 'start':
+                if hwControl.started == False:
+                    hwControl.start()
+                message = '{ "status":"sent_to_RADApp.start()" }'
+            else:
+                hwControl.handleOperation(operation, isContinuous)
+                message = '{ "status":"doing_op" }'
+        else:
+            message = '{ "status":"wrong_auth" }'
+
+        self.wfile.write(bytes(message, 'utf8'))
+        print(postVars)
+
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers() 
+
+        message = 'Hello, World!'
+        self.wfile.write(bytes(message, 'utf8'))
+        return
+    
+    def start(ip, port):
+        print('Starting server...')
+        server_address = (ip, port)
+        httpd = HTTPServer(server_address, Server)
+        print('Server started on: ' + ip + ':' + str(port))
+        httpd.serve_forever()
