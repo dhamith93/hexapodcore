@@ -2,6 +2,7 @@ import RPi.GPIO as gpio
 import time
 from camera_stream import CameraStream 
 
+
 class RADApp:
     started = False
 
@@ -15,7 +16,10 @@ class RADApp:
         print('Starting hexapod...')
         self.setup()
         self.broadcast()
-    
+
+    def stop(self):
+        self.cameraStream.stop()
+
     def goForward(self):
         print('going forward...')
         gpio.output(7, True)
@@ -34,12 +38,14 @@ class RADApp:
 
     def broadcast(self):
         print('broadcasting...')
-        cameraStream = CameraStream()
-        cameraStream.stream('127.0.0.1', 5000)
+        self.cameraStream = CameraStream()
+        self.cameraStream.stream('127.0.0.1', 5000)
 
     def handleOperation(self, operation, isContinuous):
-        if operation == 'start' and not self.start:
+        if operation == 'start' and not self.started:
             self.start()
+        elif operation == 'stop' and self.started:
+            self.stop()
         elif operation == 'forward':
             self.goForward()
         elif operation == 'backward':

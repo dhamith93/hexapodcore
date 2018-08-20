@@ -4,19 +4,24 @@ import picamera
 
 class CameraStream:
     def stream(self, ip, port):
-        camera = picamera.PiCamera()
-        camera.resolution = (640, 480)
-        camera.framerate = 24
+        self.camera = picamera.PiCamera()
+        self.camera.resolution = (640, 480)
+        self.camera.framerate = 24
 
-        serverSocket = socket.socket()
-        serverSocket.bind((ip, port))
-        serverSocket.listen(0)
+        self.serverSocket = socket.socket()
+        self.serverSocket.bind((ip, port))
+        self.serverSocket.listen(0)
 
-        connection = serverSocket.accept()[0].makefile('wb')
+        self.connection = self.serverSocket.accept()[0].makefile('wb')
         try:
-            camera.start_recording(connection, format='h264')
-            camera.wait_recording(60)
-            camera.stop_recording()
-        finally:
-            connection.close()
-            serverSocket.close()
+            self.camera.start_recording(self.connection, format='h264')
+        except:
+            pass
+
+    def stop(self):
+        try:
+            self.camera.stop_recording()
+            self.connection.close()
+            self.serverSocket.close()
+        except:
+            pass
