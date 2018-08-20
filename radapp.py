@@ -1,5 +1,6 @@
 import RPi.GPIO as gpio
 import time
+from camera_stream import CameraStream 
 
 class RADApp:
     started = False
@@ -33,6 +34,8 @@ class RADApp:
 
     def broadcast(self):
         print('broadcasting...')
+        cameraStream = CameraStream()
+        cameraStream.stream('127.0.0.1', 5000)
 
     def handleOperation(self, operation, isContinuous):
         if operation == 'start' and not self.start:
