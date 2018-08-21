@@ -41,7 +41,7 @@ class RADApp:
         self.cameraStream = CameraStream()
         self.cameraStream.stream('127.0.0.1', 5000)
 
-    def handleOperation(self, operation, isContinuous):
+    def handleOperation(self, operation):
         if operation == 'start' and not self.started:
             self.start()
         elif operation == 'stop' and self.started:

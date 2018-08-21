@@ -24,7 +24,7 @@ class Server(BaseHTTPRequestHandler):
                 key = postVars[bytes('auth', 'utf8')][0].decode('utf-8')
                 opType = postVars[bytes('type', 'utf8')][0].decode('utf-8')
                 operation = postVars[bytes('op', 'utf8')][0].decode('utf-8')
-                isContinuous = (postVars[bytes('cont', 'utf8')][0].decode('utf-8') == 'true')
+                #isContinuous = (postVars[bytes('cont', 'utf8')][0].decode('utf-8') == 'true')
             except:
                 message = '{ "status":"error_decoding_params" }'
                 self.wfile.write(bytes(message, 'utf8'))
@@ -42,8 +42,12 @@ class Server(BaseHTTPRequestHandler):
                 if hwControl.started == False:
                     hwControl.start()
                 message = '{ "status":"sent_to_RADApp.start()" }'
+            elif operation == 'stop':
+                if hwControl.started:
+                    hwControl.stop()
+                message = '{ "status":"sent_to_RADApp.stop()" }'
             else:
-                hwControl.handleOperation(operation, isContinuous)
+                hwControl.handleOperation(operation)
                 message = '{ "status":"doing_op" }'
         else:
             message = '{ "status":"wrong_auth" }'
