@@ -1,12 +1,14 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import cgi
+import sys
 
-from radapp import RADApp
+#from radapp import RADApp
 
-class Server(BaseHTTPRequestHandler):         
+class Server(BaseHTTPRequestHandler):
+    verbose = False
 
     def do_POST(self):
-        hwControl = RADApp()
+        #hwControl = RADApp()
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers() 
@@ -39,21 +41,23 @@ class Server(BaseHTTPRequestHandler):
                 #test(postVars)
                 message = '{ "status":"sent_to_test()" }'
             elif operation == 'start':
-                if hwControl.started == False:
-                    hwControl.start()
+                #if hwControl.started == False:
+                #    hwControl.start()
                 message = '{ "status":"sent_to_RADApp.start()" }'
             elif operation == 'stop':
-                if hwControl.started:
-                    hwControl.stop()
+                #if hwControl.started:
+                #    hwControl.stop()
                 message = '{ "status":"sent_to_RADApp.stop()" }'
             else:
-                hwControl.handleOperation(operation)
+                #hwControl.handleOperation(operation)
                 message = '{ "status":"doing_op" }'
         else:
             message = '{ "status":"wrong_auth" }'
 
         self.wfile.write(bytes(message, 'utf8'))
-        print(postVars)
+
+        if self.verbose:
+            print(postVars)
 
     def do_GET(self):
         self.send_response(200)
@@ -64,7 +68,15 @@ class Server(BaseHTTPRequestHandler):
         self.wfile.write(bytes(message, 'utf8'))
         return
     
-    def start(ip, port):
+    def log_message(self, format, *args):
+        if self.verbose:
+            sys.stderr.write("%s - - [%s] %s\n" %
+                            (self.address_string(),
+                            self.log_date_time_string(),
+                            format%args))
+    
+    def start(self, ip, port, verbose):
+        self.verbose = verbose
         print('Starting server...')
         server_address = (ip, port)
         httpd = HTTPServer(server_address, Server)
