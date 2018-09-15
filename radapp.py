@@ -51,7 +51,6 @@ class RADApp:
         self.currentOp = 'idle'
 
     def stop(self):
-        print("Stopping...")
         self.started = False
         #self.cameraStream.stop()
         self.leftMotor('stop')
@@ -90,9 +89,11 @@ class RADApp:
         # self.cameraStream.stream('127.0.0.1', 5000)
 
     def handleOperation(self, operation):
+        print(operation)
         if operation == 'start' and not self.started:
             self.start()
         elif operation == 'stop' and self.started:
+            print("Stopping...")
             self.stop()
         elif operation == 'forward':
             self.goForward()
