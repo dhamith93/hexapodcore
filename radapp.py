@@ -46,6 +46,7 @@ class RADApp:
         self.setup()
         #self.broadcast()
         self.currentOp = 'idle'
+        self.started = True
 
     def stop(self):
         #self.cameraStream.stop()
@@ -53,6 +54,7 @@ class RADApp:
         self.rightMotor('stop')
         gpio.cleanup()
         self.currentOp = 'stopped'
+        self.started = False
 
     def goForward(self):
         self.leftMotor('forward')
