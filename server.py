@@ -40,14 +40,6 @@ class Server(BaseHTTPRequestHandler):
             if opType == 'test':
                 #test(postVars)
                 message = '{ "status":"sent_to_test()" }'
-            elif operation == 'start':
-                if hwControl.started == False:
-                   hwControl.start()
-                message = '{ "status":"sent_to_RADApp.start()" }'
-            elif operation == 'stop':
-                if hwControl.started:
-                   hwControl.stop()
-                message = '{ "status":"sent_to_RADApp.stop()" }'
             else:
                 hwControl.handleOperation(operation)
                 message = '{ "status":"doing_op" }'
