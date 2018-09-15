@@ -1,6 +1,11 @@
 import RPi.GPIO as gpio
 import time
-from camera_stream import CameraStream 
+#from camera_stream import CameraStream 
+
+LEFT_FORWARD = 4
+LEFT_BACKWARD = 17
+RIGHT_FORWARD = 27
+RIGHT_BACKWARD = 22
 
 class RADApp:
     started = False
@@ -9,49 +14,41 @@ class RADApp:
 
     def rightMotor(self, op):
         if op == 'forward':
-            gpio.output(7, True)
-            gpio.output(11, True)
-            gpio.output(13, True)
-            gpio.output(15, False)
+            gpio.output(RIGHT_FORWARD, True)
+            gpio.output(RIGHT_BACKWARD, False)
         elif op == 'stop':
-            gpio.output(7, False)
-            gpio.output(11, False)
-            gpio.output(13, False)
+            gpio.output(RIGHT_FORWARD, False)
+            gpio.output(RIGHT_BACKWARD, False)
         elif op == 'backward':
-            gpio.output(7, True)
-            gpio.output(11, True)
-            gpio.output(13, True)
-            gpio.output(15, False)
+            gpio.output(RIGHT_FORWARD, False)
+            gpio.output(RIGHT_BACKWARD, True)
     
     def leftMotor(self, op):
         if op == 'forward':
-            gpio.output(7, True)
-            gpio.output(11, True)
-            gpio.output(13, True)
-            gpio.output(15, False)
+            gpio.output(LEFT_FORWARD, True)
+            gpio.output(LEFT_BACKWARD, False)
         elif op == 'stop':
-            gpio.output(7, False)
-            gpio.output(11, False)
-            gpio.output(13, False)
+            gpio.output(LEFT_FORWARD, False)
+            gpio.output(LEFT_BACKWARD, False)
         elif op == 'backward':
-            gpio.output(7, True)
-            gpio.output(11, True)
-            gpio.output(13, True)
-            gpio.output(15, False)
+            gpio.output(LEFT_FORWARD, False)
+            gpio.output(LEFT_BACKWARD, True)
 
     def setup(self):
-        gpio.setup(7, gpio.OUT)
-        gpio.setup(11, gpio.OUT)
-        gpio.setup(13, gpio.OUT)
-        gpio.setup(15, gpio.OUT)
+        gpio.setmode(gpio.BCM)
+        gpio.cleanup()
+        gpio.setup(LEFT_FORWARD, gpio.OUT)
+        gpio.setup(LEFT_BACKWARD, gpio.OUT)
+        gpio.setup(RIGHT_FORWARD, gpio.OUT)
+        gpio.setup(RIGHT_BACKWARD, gpio.OUT)
 
     def start(self):
         self.setup()
-        self.broadcast()
+        #self.broadcast()
         self.currentOp = 'idle'
 
     def stop(self):
-        self.cameraStream.stop()
+        #self.cameraStream.stop()
         self.leftMotor('stop')
         self.rightMotor('stop')
         gpio.cleanup()
@@ -83,9 +80,9 @@ class RADApp:
         elif self.currentOp == 'backward':
             self.rightMotor('backward')
 
-    def broadcast(self):
-        self.cameraStream = CameraStream()
-        self.cameraStream.stream('127.0.0.1', 5000)
+    # def broadcast(self):
+        # self.cameraStream = CameraStream()
+        # self.cameraStream.stream('127.0.0.1', 5000)
 
     def handleOperation(self, operation):
         if operation == 'start' and not self.started:
