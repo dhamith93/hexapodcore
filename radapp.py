@@ -3,8 +3,8 @@ import time
 #from camera_stream import CameraStream 
 
 LEFT_FORWARD = 4
-LEFT_BACKWARD = 17
-RIGHT_FORWARD = 27
+LEFT_BACKWARD = 27
+RIGHT_FORWARD = 17
 RIGHT_BACKWARD = 22
 
 class RADApp:
@@ -35,8 +35,8 @@ class RADApp:
             gpio.output(LEFT_BACKWARD, True)
 
     def setup(self):
-        gpio.setmode(gpio.BCM)
         gpio.cleanup()
+        gpio.setmode(gpio.BCM)
         gpio.setup(LEFT_FORWARD, gpio.OUT)
         gpio.setup(LEFT_BACKWARD, gpio.OUT)
         gpio.setup(RIGHT_FORWARD, gpio.OUT)
