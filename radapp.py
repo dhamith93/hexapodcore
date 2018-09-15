@@ -51,6 +51,7 @@ class RADApp:
         self.currentOp = 'idle'
 
     def stop(self):
+        print("Stopping...")
         self.started = False
         #self.cameraStream.stop()
         self.leftMotor('stop')
