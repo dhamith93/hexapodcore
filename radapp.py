@@ -86,7 +86,7 @@ class RADApp:
 
     # def broadcast(self):
         # self.cameraStream = CameraStream()
-        # self.cameraStream.stream('127.0.0.1', 5000)
+        # self.cameraStream.stream('0.0.0.0', 5000)
 
     def handleOperation(self, operation):
         print(operation)
