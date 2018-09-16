@@ -90,10 +90,9 @@ class RADApp:
 
     def handleOperation(self, operation):
         print(operation)
-        if operation == 'start' and not self.started:
+        if operation == 'start':
             self.start()
-        elif operation == 'stop' and self.started:
-            print("Stopping...")
+        elif operation == 'stop':
             self.stop()
         elif operation == 'forward':
             self.goForward()

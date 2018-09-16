@@ -26,7 +26,6 @@ class Server(BaseHTTPRequestHandler):
                 key = postVars[bytes('auth', 'utf8')][0].decode('utf-8')
                 opType = postVars[bytes('type', 'utf8')][0].decode('utf-8')
                 operation = postVars[bytes('op', 'utf8')][0].decode('utf-8')
-                #isContinuous = (postVars[bytes('cont', 'utf8')][0].decode('utf-8') == 'true')
             except:
                 message = '{ "status":"error_decoding_params" }'
                 self.wfile.write(bytes(message, 'utf8'))
@@ -38,7 +37,6 @@ class Server(BaseHTTPRequestHandler):
 
         if key == 'KEY_123': # TODO secure keys
             if opType == 'test':
-                #test(postVars)
                 message = '{ "status":"sent_to_test()" }'
             else:
                 hwControl.handleOperation(operation)

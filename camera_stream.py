@@ -5,7 +5,8 @@ import picamera
 class CameraStream:
     def stream(self, ip, port):
         self.camera = picamera.PiCamera()
-        self.camera.resolution = (640, 480)
+        # self.camera.resolution = (640, 480)
+        self.camera.resolution = (200, 200) # use lower resolution to reduce the stream delay
         self.camera.framerate = 24
 
         self.serverSocket = socket.socket()
