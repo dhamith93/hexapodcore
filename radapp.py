@@ -1,6 +1,6 @@
 import RPi.GPIO as gpio
 import time
-#from camera_stream import CameraStream 
+import subprocess
 
 LEFT_FORWARD = 17
 LEFT_BACKWARD = 18
@@ -47,12 +47,12 @@ class RADApp:
     def start(self):
         self.started = True
         self.setup()
-        #self.broadcast()
+        subprocess.call('./start_stream.sh')
         self.currentOp = 'idle'
 
     def stop(self):
         self.started = False
-        #self.cameraStream.stop()
+        subprocess.call('./stop_stream.sh')
         self.leftMotor('stop')
         self.rightMotor('stop')
         gpio.cleanup()
@@ -83,10 +83,6 @@ class RADApp:
             self.rightMotor('forward')
         elif self.currentOp == 'backward':
             self.rightMotor('backward')
-
-    # def broadcast(self):
-        # self.cameraStream = CameraStream()
-        # self.cameraStream.stream('0.0.0.0', 5000)
 
     def handleOperation(self, operation):
         print(operation)
