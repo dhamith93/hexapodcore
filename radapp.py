@@ -2,10 +2,10 @@ import RPi.GPIO as gpio
 import time
 #from camera_stream import CameraStream 
 
-LEFT_FORWARD = 4
-LEFT_BACKWARD = 27
-RIGHT_FORWARD = 17
-RIGHT_BACKWARD = 22
+LEFT_FORWARD = 17
+LEFT_BACKWARD = 18
+RIGHT_FORWARD = 22
+RIGHT_BACKWARD = 23
 
 class RADApp:
     started = False
