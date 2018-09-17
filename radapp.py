@@ -47,12 +47,12 @@ class RADApp:
     def start(self):
         self.started = True
         self.setup()
-        subprocess.call('./start_stream.sh')
+        subprocess.call('/home/pi/git/hexapodcore/start_stream.sh')
         self.currentOp = 'idle'
 
     def stop(self):
         self.started = False
-        subprocess.call('./stop_stream.sh')
+        subprocess.call('/home/pi/git/hexapodcore/stop_stream.sh')
         self.leftMotor('stop')
         self.rightMotor('stop')
         gpio.cleanup()

@@ -40,7 +40,7 @@ class Server(BaseHTTPRequestHandler):
                 message = '{ "status":"sent_to_test()" }'
             else:
                 hwControl.handleOperation(operation)
-                message = '{ "status":"doing_op" }'
+                message = '{ "status":"OK" }'
         else:
             message = '{ "status":"wrong_auth" }'
 
@@ -50,12 +50,15 @@ class Server(BaseHTTPRequestHandler):
             print(postVars)
 
     def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers() 
+        # self.send_response(200)
+        # self.send_header('Content-type', 'application/json')
+        # self.end_headers() 
 
-        message = 'Hello, World!'
-        self.wfile.write(bytes(message, 'utf8'))
+        # message = 'Hello, World!'
+        # self.wfile.write(bytes(message, 'utf8')) 
+        self.send_response(301)
+        self.send_header('Location','https://www.youtube.com/watch?v=PGNiXGX2nLU')
+        self.end_headers()
         return
     
     def log_message(self, format, *args):
