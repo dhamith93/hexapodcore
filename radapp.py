@@ -10,7 +10,7 @@ RIGHT_BACKWARD = 23
 class RADApp:
     started = False
     currentOp = 'stopped'
-    sleepTime = 0.5
+    sleepTime = 1.5
 
     def rightMotor(self, op):
         if op == 'forward':
@@ -74,11 +74,25 @@ class RADApp:
         elif self.currentOp == 'backward':
             self.leftMotor('forward')
 
+        time.sleep(self.sleepTime);
+
+        if self.currentOp == 'forward':
+            self.leftMotor('forward')
+        elif self.currentOp == 'backward':
+            self.leftMotor('backward')
+
     def goRight(self):
         if self.currentOp == 'forward':
             self.rightMotor('backward')
         elif self.currentOp == 'backward':
             self.rightMotor('forward')
+
+        time.sleep(self.sleepTime);
+
+        if self.currentOp == 'forward':
+            self.rightMotor('forward')
+        elif self.currentOp == 'backward':
+            self.rightMotor('backward')
 
     def handleOperation(self, operation):
         print(operation)

@@ -6,9 +6,9 @@ from radapp import RADApp
 
 class Server(BaseHTTPRequestHandler):
     verbose = False
+    hwControl = RADApp()
 
     def do_POST(self):
-        hwControl = RADApp()
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
         self.end_headers() 
@@ -39,7 +39,7 @@ class Server(BaseHTTPRequestHandler):
             if opType == 'test':
                 message = '{ "status":"sent_to_test()" }'
             else:
-                hwControl.handleOperation(operation)
+                self.hwControl.handleOperation(operation)
                 message = '{ "status":"OK" }'
         else:
             message = '{ "status":"wrong_auth" }'
