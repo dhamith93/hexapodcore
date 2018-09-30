@@ -2,10 +2,10 @@ import RPi.GPIO as gpio
 import time
 import subprocess
 
-LEFT_FORWARD = 17
-LEFT_BACKWARD = 18
-RIGHT_FORWARD = 22
-RIGHT_BACKWARD = 23
+LEFT_FORWARD = 18
+LEFT_BACKWARD = 17
+RIGHT_FORWARD = 23
+RIGHT_BACKWARD = 22
 
 class RADApp:
     started = False
@@ -58,6 +58,11 @@ class RADApp:
         gpio.cleanup()
         self.currentOp = 'stopped'
 
+    def halt(self):
+        self.leftMotor('stop')
+        self.rightMotor('stop')
+        self.currentOp = 'halted'
+
     def goForward(self):
         self.leftMotor('forward')
         self.rightMotor('forward')
@@ -69,33 +74,22 @@ class RADApp:
         self.currentOp = 'backward'
 
     def goLeft(self):
-        if self.currentOp == 'forward':
+        if self.currentOp == 'forward' or self.currentOp == 'halted':
             self.leftMotor('backward')
+            self.rightMotor('forward')
         elif self.currentOp == 'backward':
             self.leftMotor('forward')
-
-        time.sleep(self.sleepTime);
-
-        if self.currentOp == 'forward':
-            self.leftMotor('forward')
-        elif self.currentOp == 'backward':
-            self.leftMotor('backward')
+            self.rightMotor('backward')
 
     def goRight(self):
-        if self.currentOp == 'forward':
+        if self.currentOp == 'forward' or self.currentOp == 'halted':
             self.rightMotor('backward')
+            self.leftMotor('forward')
         elif self.currentOp == 'backward':
             self.rightMotor('forward')
-
-        time.sleep(self.sleepTime);
-
-        if self.currentOp == 'forward':
-            self.rightMotor('forward')
-        elif self.currentOp == 'backward':
-            self.rightMotor('backward')
+            self.leftMotor('backward')
 
     def handleOperation(self, operation):
-        print(operation)
         if operation == 'start':
             self.start()
         elif operation == 'stop':
@@ -108,5 +102,7 @@ class RADApp:
             self.goLeft()
         elif operation == 'right':
             self.goRight()
+        elif operation == 'halt':
+            self.halt()
         else:
             print('Err... invalid op')
