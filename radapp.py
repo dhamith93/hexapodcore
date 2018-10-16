@@ -7,10 +7,26 @@ LEFT_BACKWARD = 17
 RIGHT_FORWARD = 23
 RIGHT_BACKWARD = 22
 
+WHITE_LED_1 = 5
+WHITE_LED_2 = 6
+RED_LED = 13
+
 class RADApp:
     started = False
     currentOp = 'stopped'
     sleepTime = 1.5
+
+    def setup(self):
+        gpio.cleanup()
+        gpio.setmode(gpio.BCM)
+        gpio.setup(LEFT_FORWARD, gpio.OUT)
+        gpio.setup(LEFT_BACKWARD, gpio.OUT)
+        gpio.setup(RIGHT_FORWARD, gpio.OUT)
+        gpio.setup(RIGHT_BACKWARD, gpio.OUT)
+        gpio.setup(WHITE_LED_1, gpio.OUT)
+        gpio.setup(WHITE_LED_2, gpio.OUT)
+        gpio.setup(RED_LED, gpio.OUT)
+        self.halt()
 
     def rightMotor(self, op):
         if op == 'forward':
@@ -34,20 +50,26 @@ class RADApp:
             gpio.output(LEFT_FORWARD, False)
             gpio.output(LEFT_BACKWARD, True)
 
-    def setup(self):
-        gpio.cleanup()
-        gpio.setmode(gpio.BCM)
-        gpio.setup(LEFT_FORWARD, gpio.OUT)
-        gpio.setup(LEFT_BACKWARD, gpio.OUT)
-        gpio.setup(RIGHT_FORWARD, gpio.OUT)
-        gpio.setup(RIGHT_BACKWARD, gpio.OUT)
-        self.leftMotor('stop')
-        self.rightMotor('stop')
+    def led(self, led, operation):
+        if led == 'white':
+            if operation == 'on':
+                gpio.output(WHITE_LED_1, True)
+                gpio.output(WHITE_LED_2, True)
+            else:
+                gpio.output(WHITE_LED_1, False)
+                gpio.output(WHITE_LED_2, False)
+        
+        if led == 'red':
+            if operation == 'on':
+                gpio.output(RED_LED, True)
+            else:
+                gpio.output(RED_LED, False)
 
     def start(self):
         self.started = True
         self.setup()
         subprocess.call('/home/pi/git/hexapodcore/start_stream.sh')
+        self.led('white', 'on')
         self.currentOp = 'idle'
 
     def stop(self):
@@ -55,6 +77,7 @@ class RADApp:
         subprocess.call('/home/pi/git/hexapodcore/stop_stream.sh')
         self.leftMotor('stop')
         self.rightMotor('stop')
+        self.led('white', 'off')
         gpio.cleanup()
         self.currentOp = 'stopped'
 
@@ -104,5 +127,9 @@ class RADApp:
             self.goRight()
         elif operation == 'halt':
             self.halt()
+        elif operation == 'emergency_on':
+            self.led('red', 'on')
+        elif operation == 'emergency_off':
+            self.led('red', 'off')
         else:
             print('Err... invalid op')

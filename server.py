@@ -8,6 +8,14 @@ class Server(BaseHTTPRequestHandler):
     verbose = False
     hwControl = RADApp()
 
+    def start(self, ip, port, verbose):
+        self.verbose = verbose
+        print('Starting server...')
+        server_address = (ip, port)
+        httpd = HTTPServer(server_address, Server)
+        print('Server started on: ' + ip + ':' + str(port))
+        httpd.serve_forever()
+
     def do_POST(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
@@ -35,7 +43,7 @@ class Server(BaseHTTPRequestHandler):
             self.wfile.write(bytes(message, 'utf8'))
             return
 
-        if key == 'KEY_123': # TODO secure keys
+        if key == 'KEY_123': # temp key
             if opType == 'test':
                 message = '{ "status":"sent_to_test()" }'
             else:
@@ -50,12 +58,6 @@ class Server(BaseHTTPRequestHandler):
             print(postVars)
 
     def do_GET(self):
-        # self.send_response(200)
-        # self.send_header('Content-type', 'application/json')
-        # self.end_headers() 
-
-        # message = 'Hello, World!'
-        # self.wfile.write(bytes(message, 'utf8')) 
         self.send_response(301)
         self.send_header('Location','https://www.youtube.com/watch?v=PGNiXGX2nLU')
         self.end_headers()
@@ -67,11 +69,3 @@ class Server(BaseHTTPRequestHandler):
                             (self.address_string(),
                             self.log_date_time_string(),
                             format%args))
-    
-    def start(self, ip, port, verbose):
-        self.verbose = verbose
-        print('Starting server...')
-        server_address = (ip, port)
-        httpd = HTTPServer(server_address, Server)
-        print('Server started on: ' + ip + ':' + str(port))
-        httpd.serve_forever()
