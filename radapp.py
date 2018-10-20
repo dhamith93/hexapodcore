@@ -69,7 +69,6 @@ class RADApp:
         self.started = True
         self.setup()
         subprocess.call('/home/pi/git/hexapodcore/start_stream.sh')
-        self.led('white', 'on')
         self.currentOp = 'idle'
 
     def stop(self):
@@ -78,6 +77,7 @@ class RADApp:
         self.leftMotor('stop')
         self.rightMotor('stop')
         self.led('white', 'off')
+        self.led('red', 'off')
         gpio.cleanup()
         self.currentOp = 'stopped'
 
@@ -127,6 +127,10 @@ class RADApp:
             self.goRight()
         elif operation == 'halt':
             self.halt()
+        elif operation == 'light_on':
+            self.led('white', 'on')
+        elif operation == 'light_off':
+            self.led('white', 'off')
         elif operation == 'emergency_on':
             self.led('red', 'on')
         elif operation == 'emergency_off':
